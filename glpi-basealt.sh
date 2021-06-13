@@ -12,9 +12,16 @@ city="$1"
 device="$2"
 serial="$3"
 
-apt-get update
-apt-get install hw-probe fusioninventory-agent -y
-fusioninventory-agent --tasks=Inventory --server="https://glpi.ipa.basealt.ru/plugins/fusioninventory/t=$city,$device,$serial"
+if rpm -q hw-probe fusioninventory-agent >/dev/null; then
+    echo "fusioninventory-agent and hw-probe already installed"
+else
+    apt-get update
+    apt-get install hw-probe fusioninventory-agent -y
+fi
+
+echo fusioninventory-agent --tasks=Inventory --server="https://glpi.ipa.basealt.ru/plugins/fusioninventory/" -t=$city,$device,$serial
+fusioninventory-agent --tasks=Inventory --server="https://glpi.ipa.basealt.ru/plugins/fusioninventory/" -t=$city,$device,$serial
+
 
 dmimsg="bios-vendor
   bios-version
